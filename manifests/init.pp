@@ -1,5 +1,9 @@
 class pam_policies {
-##   if $::osfamily == 'CentOS' and $::operatingsystemmajrelease == 6 {
-       include 'pam_policies::rh6' 
-##   }
+  case $operatingsystem {
+    'RedHat', 'CentOS' { 
+      if $::operatingsystemmajrelease == 6 {
+        include rh6
+      }
+    }
+  }
 }
