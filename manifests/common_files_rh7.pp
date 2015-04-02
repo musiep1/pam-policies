@@ -42,7 +42,7 @@ class pam_policies::common_files_rh7 {
   }
 
 ### password quality parameters for OS 7 and above
-  augeas { "pwquality_conf_OS7":
+  augeas { "pwquality_conf":
         context => "/files/etc/security/pwquality.conf",
         changes => [
 			      "set minlen 8",
