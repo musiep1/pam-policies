@@ -12,12 +12,12 @@ class pam_policies {
         include common_files 
       }
       elsif $::operatingsystemmajrelease > 6 {
-        common_params_OS7 { 'system-auth': } 
-        common_params_OS7 { 'password-auth': } 
-        include common_files_OS7
+        common_params_rh7 { 'system-auth': } 
+        common_params_rh7 { 'password-auth': } 
+        include common_files_rh7
 
       } else {
-        notice("MajRelease ${::operatingsystemmajrelease} is not currently supported for pam_policies mgmt.")
+        notice("MajorRelease ${::operatingsystemmajrelease} is not currently supported for pam_policies mgmt.")
       }
     }
 

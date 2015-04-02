@@ -1,5 +1,5 @@
 ### resource type below will change pam file provided as a resource title 
-define pam_policies::common_params_OS7 ( $pam_file_name = $title, ) {
+define pam_policies::common_params_rh7 ( $pam_file_name = $title, ) {
 
  augeas {
 	"${pam_file_name}_tally2_deny_failed_auth_attempts_insert":
@@ -76,4 +76,4 @@ define pam_policies::common_params_OS7 ( $pam_file_name = $title, ) {
 
 	} # end augeas all linux common pam parameters
 
-} # end define pam_policies:common_params_OS7
+} # end define pam_policies::common_params_rh7

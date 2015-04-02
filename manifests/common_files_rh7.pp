@@ -1,4 +1,4 @@
-class pam_policies::common_files_OS7 {
+class pam_policies::common_files_rh7 {
 ### linux common user login related files permisions
   file {
     "/etc/passwd":
@@ -56,4 +56,4 @@ class pam_policies::common_files_OS7 {
 	      ],
   }
 
-} # end define pam_policies:common_files_OS7
+} # end class pam_policies::common_files_rh7
