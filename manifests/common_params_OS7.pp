@@ -1,5 +1,5 @@
 ### resource type below will change pam file provided as a resource title 
-define pam_policies::common_params ( $pam_file_name = $title, ) {
+define pam_policies::common_params_OS7 ( $pam_file_name = $title, ) {
 
  augeas {
 	"${pam_file_name}_tally2_deny_failed_auth_attempts_insert":
@@ -35,10 +35,28 @@ define pam_policies::common_params ( $pam_file_name = $title, ) {
 		],
 		onlyif  => "match *[type='account'][control='required'][module='pam_tally2.so'] size == 0";
 
-	"${pam_file_name}_passwd_history":
+	"${pam_file_name}_passwd_history_insert":
 		context => "/files/etc/pam.d/${pam_file_name}",
-		changes => "set *[type = 'password'][module = 'pam_unix.so']/argument[.=~regexp('remember.*')] remember=12",
-		onlyif  => "match *[type='password'][module='pam_unix.so']/argument[.='remember=12'] size == 0";
+		changes => [
+			"ins 01 before *[type='password' and module='pam_unix.so']",
+			"set 01/type password",
+			"set 01/control required",
+			"set 01/module pam_pwhistory.so",
+			"set 01/argument[1] use_authtok",
+			"set 01/argument[2] remember=12",
+			"set 01/argument[3] retry=3",
+		],
+		onlyif  => "match *[type='password'][control='required'][module='pam_pwhistory.so'] size == 0";
+
+	"${pam_file_name}_passwd_history_params":
+		context => "/files/etc/pam.d/${pam_file_name}",
+		changes => [
+			"set *[type='password'][module='pam_pwhistory.so']/control required",
+			"rm *[type='password'][module='pam_pwhistory.so']/argument",
+			"set *[type='password'][module='pam_pwhistory.so']/argument[1] use_authtok",
+			"set *[type='password'][module='pam_pwhistory.so']/argument[2] remember=12",
+			"set *[type='password'][module='pam_pwhistory.so']/argument[3] retry=3",
+		];
 
 	"${pam_file_name}_no_empty_passwd":
 		context => "/files/etc/pam.d/${pam_file_name}",
@@ -58,24 +76,4 @@ define pam_policies::common_params ( $pam_file_name = $title, ) {
 
 	} # end augeas all linux common pam parameters
 
-### password quality parameters 
-
-	       augeas { "${pam_file_name}_cracklib_passwd_quality_params":
-		       context => "/files/etc/pam.d/${pam_file_name}",
-		       changes => [
-			     "set *[type='password'][module='pam_cracklib.so']/control required",
-			     "rm *[type='password'][module='pam_cracklib.so']/argument",
-			     "set *[type='password'][module='pam_cracklib.so']/argument[1] try_first_pass",
-			     "set *[type='password'][module='pam_cracklib.so']/argument[2] retry=3",
-			     "set *[type='password'][module='pam_cracklib.so']/argument[3] minlen=8",
-			     "set *[type='password'][module='pam_cracklib.so']/argument[4] maxrepeat=2",
-			     "set *[type='password'][module='pam_cracklib.so']/argument[5] dcredit=-1",
-			     "set *[type='password'][module='pam_cracklib.so']/argument[6] ucredit=-1",
-			     "set *[type='password'][module='pam_cracklib.so']/argument[7] ocredit=-1",
-			     "set *[type='password'][module='pam_cracklib.so']/argument[8] lcredit=-1",
-			     "set *[type='password'][module='pam_cracklib.so']/argument[9] difok=1",
-			     "set *[type='password'][module='pam_cracklib.so']/argument[10] reject_username",
-		       ],
-         }
-
-} # end define pam_policies:common_params
+} # end define pam_policies:common_params_OS7

@@ -1,4 +1,4 @@
-class pam_policies::common_files {
+class pam_policies::common_files_OS7 {
 ### linux common user login related files permisions
   file {
     "/etc/passwd":
@@ -21,11 +21,14 @@ class pam_policies::common_files {
 	owner => root,
 	group => root,
 	mode  => 644;
+    "/etc/security/pwquality.conf":
+  owner => root,
+  group => root,
+  mode  => 644;
   }
 
 ### linux common login.defs settings
-  augeas {
-	"login.defs_passwd_policies":
+  augeas { "login.defs_passwd_policies":
 		context => "/files/etc/login.defs",
 		lens    => "login_defs.lns",
 		incl    => "/etc/login.defs",
@@ -38,4 +41,19 @@ class pam_policies::common_files {
 		],
   }
 
-} # end define pam_policies:common_files
+### password quality parameters for OS 7 and above
+  augeas { "pwquality_conf_OS7":
+        context => "/files/etc/security/pwquality.conf",
+        changes => [
+			      "set minlen 8",
+			      "set dcredit -1",
+			      "set ucredit -1",
+			      "set lcredit -1",
+			      "set ocredit -1",
+			      "set difok 1",
+			      "set maxrepeat 2",
+			      "set gecoscheck 1",
+	      ],
+  }
+
+} # end define pam_policies:common_files_OS7
