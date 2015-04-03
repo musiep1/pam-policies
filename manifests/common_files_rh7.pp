@@ -42,7 +42,7 @@ class pam_policies::common_files_rh7 {
     ensure => "present",
     owner => root,
     group => root,
-    mode  => 644;
+    mode  => 644,
     source => "puppet:///modules/pam_policies/pwquality.conf",
   }
 
