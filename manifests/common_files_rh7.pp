@@ -21,39 +21,29 @@ class pam_policies::common_files_rh7 {
 	owner => root,
 	group => root,
 	mode  => 644;
-    "/etc/security/pwquality.conf":
-  owner => root,
-  group => root,
-  mode  => 644;
   }
 
 ### linux common login.defs settings
   augeas { "login.defs_passwd_policies":
-		context => "/files/etc/login.defs",
-		lens    => "login_defs.lns",
-		incl    => "/etc/login.defs",
-		changes => [
-			"set PASS_MAX_DAYS 90",
-			"set PASS_MIN_DAYS 7",
-			"set PASS_MIN_LEN 8",
-			"set PASS_WARN_AGE 14",
-			"set ENCRYPT_METHOD SHA512",
-		],
+	context => "/files/etc/login.defs",
+	lens    => "login_defs.lns",
+	incl    => "/etc/login.defs",
+	changes => [
+		"set PASS_MAX_DAYS 90",
+		"set PASS_MIN_DAYS 7",
+		"set PASS_MIN_LEN 8",
+		"set PASS_WARN_AGE 14",
+		"set ENCRYPT_METHOD SHA512",
+	],
   }
 
-### password quality parameters for OS 7 and above
-  augeas { "pwquality_conf":
-        context => "/files/etc/security/pwquality.conf",
-        changes => [
-			      "set minlen 8",
-			      "set dcredit -1",
-			      "set ucredit -1",
-			      "set lcredit -1",
-			      "set ocredit -1",
-			      "set difok 1",
-			      "set maxrepeat 2",
-			      "set gecoscheck 1",
-	      ],
+### password quality parameters for rh 7 and above
+  file { "/etc/security/pwquality.conf":
+    ensure => "present",
+    owner => root,
+    group => root,
+    mode  => 644;
+    source => "puppet:///modules/pam_policies/pwquality.conf",
   }
 
 } # end class pam_policies::common_files_rh7
